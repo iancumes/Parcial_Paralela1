@@ -49,15 +49,17 @@ static double integral_exacta(double limite_a, double limite_b, int opcion)
     }
 }
 
-// Cada iteracion calcula el area de un rectangulo. Sin hilos ni OpenMP
-static double suma_riemann_secuencial(double limite_a,
-                                      double ancho,
-                                      uint64_t n,
-                                      int opcion)
+// reduction(+:) da a cada hilo su suma parcial y las combina al final,
+// evitando la condicion de carrera sobre un acumulador compartido
+static double suma_riemann_paralela(double limite_a,
+                                    double ancho,
+                                    uint64_t n,
+                                    int opcion)
 {
     double suma_areas = 0.0;
 
-    // Ciclo masivo: es el que se paraleliza en la version con OpenMP
+    // Ciclo masivo, repartido entre los hilos
+    #pragma omp parallel for reduction(+:suma_areas) schedule(static)
     for (uint64_t i = 0; i < n; i++) {
         const double x = limite_a + (double)i * ancho;
         const double y = evaluar_funcion(x, opcion);
@@ -84,6 +86,7 @@ int main(int argc, char *argv[])
 
     // La funcion y los limites llegan como argumentos, no por teclado:
     // el barrido de metricas no puede alimentar una entrada interactiva
+    const int hilos = omp_get_max_threads();
     const int opcion = atoi(argv[1]);
     const double limite_a = atof(argv[2]);
     const double limite_b = atof(argv[3]);
@@ -111,7 +114,7 @@ int main(int argc, char *argv[])
     // omp_get_wtime y no clock(): clock() suma el tiempo de todos los hilos
     const double inicio = omp_get_wtime();
     const double area =
-        suma_riemann_secuencial(limite_a, ancho, n, opcion);
+        suma_riemann_paralela(limite_a, ancho, n, opcion);
     const double fin = omp_get_wtime();
     // FIN DE LA MEDICION DE TIEMPO
 
@@ -122,7 +125,7 @@ int main(int argc, char *argv[])
 
     // n,hilos,funcion,a,b,tiempo,area,error
     printf("%" PRIu64 ",%d,%d,%g,%g,%f,%.15f,%.15e\n",
-           n, 1, opcion, limite_a, limite_b, fin - inicio, area, error_absoluto);
+           n, hilos, opcion, limite_a, limite_b, fin - inicio, area, error_absoluto);
 
     return 0;
 }
