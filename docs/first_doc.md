@@ -279,33 +279,95 @@ Para generar estos resultados:
 
 ## Integrante: Diego José López Campos
 
-**Equipo de pruebas:** _(pendiente: modelo de procesador, núcleos físicos, hilos lógicos, compilador y sistema operativo)_
-
-Para generar estos resultados:
-
-```sh
-./scripts/benchmark.sh --etiqueta diego
-```
+**Equipo de pruebas:** Intel Core Ultra 7 255HX, 20 núcleos físicos y 20 hilos lógicos, compilador MinGW-w64 GCC 15.2.0 sobre Windows. Se evaluaron 1, 2, 4, 8 y 16 hilos; por tanto, el último punto todavía se encuentra por debajo de los 20 núcleos físicos disponibles.
 
 ### Multiplicación de matrices
 
-> **Pendiente:** tabla de tiempos, speedup y eficiencia, tomada de `resultados_diego/metricas_matrices.csv`.
+| \(n\) | Hilos | \(T_{sec}\) (s) | \(T_{par}\) (s) | \(S_{sec}\) | \(S_{omp}\) | \(E_{omp}\) |
+|---|---|---|---|---|---|---|
+| 500 | 1 | 0.018 | 0.054 | 0.33x | 1.00x | 100% |
+| 500 | 2 | 0.018 | 0.028 | 0.64x | 1.93x | 96% |
+| 500 | 4 | 0.018 | 0.014 | 1.29x | 3.86x | 96% |
+| 500 | 8 | 0.018 | 0.010 | 1.80x | 5.40x | 68% |
+| 500 | 16 | 0.018 | 0.008 | 2.25x | 6.75x | 42% |
+| 1000 | 1 | 0.208 | 0.619 | 0.34x | 1.00x | 100% |
+| 1000 | 2 | 0.208 | 0.312 | 0.67x | 1.98x | 99% |
+| 1000 | 4 | 0.208 | 0.154 | 1.35x | 4.02x | 100% |
+| 1000 | 8 | 0.208 | 0.090 | 2.31x | 6.88x | 86% |
+| 1000 | 16 | 0.208 | 0.069 | 3.01x | 8.97x | 56% |
+| 1500 | 1 | 0.788 | 2.211 | 0.36x | 1.00x | 100% |
+| 1500 | 2 | 0.788 | 1.051 | 0.75x | 2.10x | 105% |
+| 1500 | 4 | 0.788 | 0.558 | 1.41x | 3.96x | 99% |
+| 1500 | 8 | 0.788 | 0.319 | 2.47x | 6.93x | 87% |
+| 1500 | 16 | 0.788 | 0.226 | 3.49x | 9.78x | 61% |
+| 2000 | 1 | 3.141 | 9.800 | 0.32x | 1.00x | 100% |
+| 2000 | 2 | 3.141 | 4.918 | 0.64x | 1.99x | 100% |
+| 2000 | 4 | 3.141 | 2.454 | 1.28x | 3.99x | 100% |
+| 2000 | 8 | 3.141 | 1.225 | 2.56x | 8.00x | 100% |
+| 2000 | 16 | 3.141 | 0.722 | 4.35x | 13.57x | 85% |
 
-> **Pendiente:** insertar las figuras de `img_diego/matrices_*.png`.
+![Speedup de matrices — Diego](../img_diego/matrices_speedup_vs_hilos.png)
+
+![Eficiencia de matrices — Diego](../img_diego/matrices_eficiencia_vs_hilos.png)
+
+![Tiempo de matrices según hilos — Diego](../img_diego/matrices_tiempo_vs_hilos.png)
+
+![Tiempo de matrices según tamaño — Diego](../img_diego/matrices_tiempo_vs_tamano.png)
 
 ### Suma de Riemann
 
-> **Pendiente:** tabla de tiempos, speedup y eficiencia, tomada de `resultados_diego/metricas_riemann.csv`.
+| \(f(x)\) | Rectángulos | Hilos | \(T_{sec}\) (s) | \(T_{par}\) (s) | \(S_{sec}\) | \(S_{omp}\) | \(E_{omp}\) |
+|---|---|---|---|---|---|---|---|
+| \(x^2\) | 100,000,000 | 1 | 0.049 | 0.050 | 0.98x | 1.00x | 100% |
+| \(x^2\) | 100,000,000 | 2 | 0.049 | 0.026 | 1.88x | 1.92x | 96% |
+| \(x^2\) | 100,000,000 | 4 | 0.049 | 0.012 | 4.08x | 4.17x | 104% |
+| \(x^2\) | 100,000,000 | 8 | 0.049 | 0.009 | 5.44x | 5.56x | 69% |
+| \(x^2\) | 100,000,000 | 16 | 0.049 | 0.008 | 6.13x | 6.25x | 39% |
+| \(x^2\) | 500,000,000 | 1 | 0.253 | 0.247 | 1.02x | 1.00x | 100% |
+| \(x^2\) | 500,000,000 | 2 | 0.253 | 0.129 | 1.96x | 1.91x | 96% |
+| \(x^2\) | 500,000,000 | 4 | 0.253 | 0.065 | 3.89x | 3.80x | 95% |
+| \(x^2\) | 500,000,000 | 8 | 0.253 | 0.040 | 6.33x | 6.18x | 77% |
+| \(x^2\) | 500,000,000 | 16 | 0.253 | 0.032 | 7.91x | 7.72x | 48% |
+| \(x^2\) | 1,000,000,000 | 1 | 0.509 | 0.489 | 1.04x | 1.00x | 100% |
+| \(x^2\) | 1,000,000,000 | 2 | 0.509 | 0.254 | 2.00x | 1.93x | 96% |
+| \(x^2\) | 1,000,000,000 | 4 | 0.509 | 0.129 | 3.95x | 3.79x | 95% |
+| \(x^2\) | 1,000,000,000 | 8 | 0.509 | 0.079 | 6.44x | 6.19x | 77% |
+| \(x^2\) | 1,000,000,000 | 16 | 0.509 | 0.058 | 8.78x | 8.43x | 53% |
+| \(\sin x\) | 100,000,000 | 1 | 0.247 | 0.189 | 1.31x | 1.00x | 100% |
+| \(\sin x\) | 100,000,000 | 2 | 0.247 | 0.120 | 2.06x | 1.58x | 79% |
+| \(\sin x\) | 100,000,000 | 4 | 0.247 | 0.086 | 2.87x | 2.20x | 55% |
+| \(\sin x\) | 100,000,000 | 8 | 0.247 | 0.052 | 4.75x | 3.63x | 45% |
+| \(\sin x\) | 100,000,000 | 16 | 0.247 | 0.034 | 7.26x | 5.56x | 35% |
+| \(\sin x\) | 500,000,000 | 1 | 1.288 | 0.955 | 1.35x | 1.00x | 100% |
+| \(\sin x\) | 500,000,000 | 2 | 1.288 | 0.594 | 2.17x | 1.61x | 80% |
+| \(\sin x\) | 500,000,000 | 4 | 1.288 | 0.422 | 3.05x | 2.26x | 57% |
+| \(\sin x\) | 500,000,000 | 8 | 1.288 | 0.251 | 5.13x | 3.80x | 48% |
+| \(\sin x\) | 500,000,000 | 16 | 1.288 | 0.161 | 8.00x | 5.93x | 37% |
+| \(\sin x\) | 1,000,000,000 | 1 | 2.478 | 1.923 | 1.29x | 1.00x | 100% |
+| \(\sin x\) | 1,000,000,000 | 2 | 2.478 | 1.190 | 2.08x | 1.62x | 81% |
+| \(\sin x\) | 1,000,000,000 | 4 | 2.478 | 0.847 | 2.93x | 2.27x | 57% |
+| \(\sin x\) | 1,000,000,000 | 8 | 2.478 | 0.501 | 4.95x | 3.84x | 48% |
+| \(\sin x\) | 1,000,000,000 | 16 | 2.478 | 0.314 | 7.89x | 6.12x | 38% |
 
-> **Pendiente:** insertar las figuras de `img_diego/riemann_*.png`.
+![Speedup de Riemann — Diego](../img_diego/riemann_speedup_vs_hilos.png)
+
+![Eficiencia de Riemann — Diego](../img_diego/riemann_eficiencia_vs_hilos.png)
+
+![Tiempo de Riemann según hilos — Diego](../img_diego/riemann_tiempo_vs_hilos.png)
+
+![Tiempo de Riemann según rectángulos — Diego](../img_diego/riemann_tiempo_vs_tamano.png)
 
 ### Evidencia de ejecución
 
-> **Pendiente:** captura de pantalla o video de la ejecución del barrido.
+El barrido completó las 300 ejecuciones: 120 para matrices y 180 para Riemann. Los checksums de matrices coincidieron exactamente en todas las configuraciones y las áreas de Riemann permanecieron dentro de la tolerancia relativa de \(10^{-9}\). Los datos crudos y los resúmenes reproducibles se encuentran en `resultados_diego/metricas_crudas_matrices.csv`, `resultados_diego/metricas_crudas_riemann.csv`, `resultados_diego/metricas_matrices.csv` y `resultados_diego/metricas_riemann.csv`.
 
 ### Análisis
 
-> **Pendiente:** comentar en qué número de hilos cae la eficiencia y si coincide con los núcleos físicos del equipo.
+En matrices, la escalabilidad de OpenMP es muy buena al usar como referencia la versión paralela con un hilo: para \(n=2000\), el speedup \(S_{omp}\) llega a 13.57x con 16 hilos, equivalente a 85 % de eficiencia. El equipo aún dispone de 20 núcleos físicos, por lo que esta medición no alcanza el punto donde sería esperable observar saturación por falta de núcleos. En cambio, para \(n=500\) la eficiencia cae hasta 42 % con 16 hilos: el trabajo es demasiado pequeño para amortizar completamente la creación, sincronización y coordinación de los hilos.
+
+El speedup formal de matrices frente al secuencial, \(S_{sec}\), alcanza 4.35x para \(n=2000\) y 16 hilos. Es sustancialmente menor que \(S_{omp}\) porque la versión paralela con un hilo tarda más que la secuencial en esta configuración (9.800 s frente a 3.141 s); por ello, ambas medidas se reportan y no deben confundirse. \(S_{omp}\) describe la escalabilidad del esquema OpenMP, mientras que \(S_{sec}\) compara el desempeño final contra la mejor línea base secuencial.
+
+Para Riemann con \(x^2\), la eficiencia respecto a OpenMP se mantiene cercana a 95 % hasta cuatro hilos y baja a 53 % con 16 hilos para \(10^9\) rectángulos; el mejor speedup formal es 8.78x. Con \(\sin x\), el trabajo por iteración es más costoso, pero el speedup puramente OpenMP llega a 6.12x y la eficiencia a 38 % con 16 hilos. El speedup formal máximo de esta función es 8.00x para \(5 \times 10^8\) rectángulos. En todos los casos, la disminución de eficiencia antes de alcanzar los 20 núcleos físicos muestra que la sobrecarga de sincronización, el ancho de banda de memoria y la variación de frecuencia del procesador también limitan la escalabilidad.
 
 ---
 
