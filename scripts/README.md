@@ -17,6 +17,13 @@ graficar.py    lee los CSV -> calcula speedup y eficiencia -> escribe el resumen
 ./scripts/benchmark.sh --etiqueta ian --solo matrices    # solo matrices
 ```
 
+Si el equipo no tiene 8 nucleos fisicos, se debe indicar el valor para que la
+linea vertical de las graficas quede correctamente rotulada. Por ejemplo:
+
+```sh
+NUCLEOS_FISICOS=14 ./scripts/benchmark.sh --etiqueta ian
+```
+
 | Bandera | Qué hace |
 |---|---|
 | `--etiqueta NOMBRE` | Separa tus salidas de las de los demás: escribe en `resultados_NOMBRE/` e `img_NOMBRE/`. Si no la pasas, usa tu usuario del sistema. |

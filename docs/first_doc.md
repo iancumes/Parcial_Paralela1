@@ -247,33 +247,123 @@ Finalmente, la comparación entre ambos problemas resulta ilustrativa. La suma d
 
 ## Integrante: Ian Rodrigo Cumes Valdez
 
-**Equipo de pruebas:** _(pendiente: modelo de procesador, núcleos físicos, hilos lógicos, compilador y sistema operativo)_
+**Equipo de pruebas:** Intel Core i9-13900H de 13.ª generación, 14 núcleos físicos y 20 hilos lógicos, compilador MinGW-w64 GCC 16.1.0 sobre Windows de 64 bits (build 26200). Este procesador utiliza una arquitectura híbrida de núcleos de rendimiento y de eficiencia, por lo que los 14 núcleos físicos no tienen todos la misma capacidad de cómputo.
 
 Para generar estos resultados:
 
 ```sh
-./scripts/benchmark.sh --etiqueta ian
+NUCLEOS_FISICOS=14 ./scripts/benchmark.sh --etiqueta ian
 ```
 
 ### Multiplicación de matrices
 
-> **Pendiente:** tabla de tiempos, speedup y eficiencia, tomada de `resultados_ian/metricas_matrices.csv`.
+| \(n\) | Hilos | \(T_{sec}\) (s) | \(T_{par}\) (s) | \(S_{sec}\) | \(S_{omp}\) | \(E_{omp}\) |
+|---|---|---|---|---|---|---|
+| 500 | 1 | 0.028 | 0.049 | 0.57x | 1.00x | 100% |
+| 500 | 2 | 0.028 | 0.025 | 1.12x | 1.96x | 98% |
+| 500 | 4 | 0.028 | 0.013 | 2.15x | 3.77x | 94% |
+| 500 | 8 | 0.028 | 0.011 | 2.55x | 4.45x | 56% |
+| 500 | 16 | 0.028 | 0.008 | 3.50x | 6.12x | 38% |
+| 1000 | 1 | 0.269 | 0.482 | 0.56x | 1.00x | 100% |
+| 1000 | 2 | 0.269 | 0.238 | 1.13x | 2.03x | 101% |
+| 1000 | 4 | 0.269 | 0.133 | 2.02x | 3.62x | 91% |
+| 1000 | 8 | 0.269 | 0.095 | 2.83x | 5.07x | 63% |
+| 1000 | 16 | 0.269 | 0.088 | 3.06x | 5.48x | 34% |
+| 1500 | 1 | 1.295 | 2.364 | 0.55x | 1.00x | 100% |
+| 1500 | 2 | 1.295 | 1.118 | 1.16x | 2.11x | 106% |
+| 1500 | 4 | 1.295 | 0.555 | 2.33x | 4.26x | 106% |
+| 1500 | 8 | 1.295 | 0.489 | 2.65x | 4.83x | 60% |
+| 1500 | 16 | 1.295 | 0.578 | 2.24x | 4.09x | 26% |
+| 2000 | 1 | 5.248 | 16.464 | 0.32x | 1.00x | 100% |
+| 2000 | 2 | 5.248 | 8.060 | 0.65x | 2.04x | 102% |
+| 2000 | 4 | 5.248 | 4.023 | 1.30x | 4.09x | 102% |
+| 2000 | 8 | 5.248 | 2.882 | 1.82x | 5.71x | 71% |
+| 2000 | 16 | 5.248 | 1.980 | 2.65x | 8.32x | 52% |
 
-> **Pendiente:** insertar las figuras de `img_ian/matrices_*.png`.
+![Speedup de matrices — Ian](../img_ian/matrices_speedup_vs_hilos.png)
+
+![Eficiencia de matrices — Ian](../img_ian/matrices_eficiencia_vs_hilos.png)
+
+![Tiempo de matrices según hilos — Ian](../img_ian/matrices_tiempo_vs_hilos.png)
+
+![Tiempo de matrices según tamaño — Ian](../img_ian/matrices_tiempo_vs_tamano.png)
 
 ### Suma de Riemann
 
-> **Pendiente:** tabla de tiempos, speedup y eficiencia, tomada de `resultados_ian/metricas_riemann.csv`.
+| \(f(x)\) | Rectángulos | Hilos | \(T_{sec}\) (s) | \(T_{par}\) (s) | \(S_{sec}\) | \(S_{omp}\) | \(E_{omp}\) |
+|---|---|---|---|---|---|---|---|
+| \(x^2\) | 100,000,000 | 1 | 0.067 | 0.060 | 1.12x | 1.00x | 100% |
+| \(x^2\) | 100,000,000 | 2 | 0.067 | 0.030 | 2.23x | 2.00x | 100% |
+| \(x^2\) | 100,000,000 | 4 | 0.067 | 0.017 | 3.94x | 3.53x | 88% |
+| \(x^2\) | 100,000,000 | 8 | 0.067 | 0.012 | 5.58x | 5.00x | 62% |
+| \(x^2\) | 100,000,000 | 16 | 0.067 | 0.007 | 9.57x | 8.57x | 54% |
+| \(x^2\) | 500,000,000 | 1 | 0.316 | 0.276 | 1.14x | 1.00x | 100% |
+| \(x^2\) | 500,000,000 | 2 | 0.316 | 0.145 | 2.18x | 1.90x | 95% |
+| \(x^2\) | 500,000,000 | 4 | 0.316 | 0.078 | 4.05x | 3.54x | 88% |
+| \(x^2\) | 500,000,000 | 8 | 0.316 | 0.062 | 5.10x | 4.45x | 56% |
+| \(x^2\) | 500,000,000 | 16 | 0.316 | 0.041 | 7.71x | 6.73x | 42% |
+| \(x^2\) | 1,000,000,000 | 1 | 0.625 | 0.560 | 1.12x | 1.00x | 100% |
+| \(x^2\) | 1,000,000,000 | 2 | 0.625 | 0.291 | 2.15x | 1.92x | 96% |
+| \(x^2\) | 1,000,000,000 | 4 | 0.625 | 0.161 | 3.88x | 3.48x | 87% |
+| \(x^2\) | 1,000,000,000 | 8 | 0.625 | 0.117 | 5.34x | 4.79x | 60% |
+| \(x^2\) | 1,000,000,000 | 16 | 0.625 | 0.080 | 7.81x | 7.00x | 44% |
+| \(\sin x\) | 100,000,000 | 1 | 0.281 | 0.270 | 1.04x | 1.00x | 100% |
+| \(\sin x\) | 100,000,000 | 2 | 0.281 | 0.187 | 1.50x | 1.44x | 72% |
+| \(\sin x\) | 100,000,000 | 4 | 0.281 | 0.139 | 2.02x | 1.94x | 49% |
+| \(\sin x\) | 100,000,000 | 8 | 0.281 | 0.081 | 3.47x | 3.33x | 42% |
+| \(\sin x\) | 100,000,000 | 16 | 0.281 | 0.056 | 5.02x | 4.82x | 30% |
+| \(\sin x\) | 500,000,000 | 1 | 1.395 | 1.367 | 1.02x | 1.00x | 100% |
+| \(\sin x\) | 500,000,000 | 2 | 1.395 | 0.911 | 1.53x | 1.50x | 75% |
+| \(\sin x\) | 500,000,000 | 4 | 1.395 | 0.664 | 2.10x | 2.06x | 51% |
+| \(\sin x\) | 500,000,000 | 8 | 1.395 | 0.396 | 3.52x | 3.45x | 43% |
+| \(\sin x\) | 500,000,000 | 16 | 1.395 | 0.276 | 5.05x | 4.95x | 31% |
+| \(\sin x\) | 1,000,000,000 | 1 | 2.773 | 2.690 | 1.03x | 1.00x | 100% |
+| \(\sin x\) | 1,000,000,000 | 2 | 2.773 | 1.783 | 1.56x | 1.51x | 75% |
+| \(\sin x\) | 1,000,000,000 | 4 | 2.773 | 1.328 | 2.09x | 2.03x | 51% |
+| \(\sin x\) | 1,000,000,000 | 8 | 2.773 | 0.813 | 3.41x | 3.31x | 41% |
+| \(\sin x\) | 1,000,000,000 | 16 | 2.773 | 0.548 | 5.06x | 4.91x | 31% |
 
-> **Pendiente:** insertar las figuras de `img_ian/riemann_*.png`.
+![Speedup de Riemann — Ian](../img_ian/riemann_speedup_vs_hilos.png)
+
+![Eficiencia de Riemann — Ian](../img_ian/riemann_eficiencia_vs_hilos.png)
+
+![Tiempo de Riemann según hilos — Ian](../img_ian/riemann_tiempo_vs_hilos.png)
+
+![Tiempo de Riemann según rectángulos — Ian](../img_ian/riemann_tiempo_vs_tamano.png)
 
 ### Evidencia de ejecución
 
-> **Pendiente:** captura de pantalla o video de la ejecución del barrido.
+El barrido completó las 300 ejecuciones previstas: 120 para matrices y 180 para Riemann. Los checksums de matrices coincidieron exactamente en todas las configuraciones y todas las áreas de Riemann permanecieron dentro de la tolerancia relativa de \(10^{-9}\). Las mediciones individuales y los resúmenes se conservaron en `resultados_ian/metricas_crudas_matrices.csv`, `resultados_ian/metricas_crudas_riemann.csv`, `resultados_ian/metricas_matrices.csv` y `resultados_ian/metricas_riemann.csv`.
+
+Resumen emitido por el script para las configuraciones de 16 hilos:
+
+```
+MATRICES, con el maximo de hilos:
+  n=500                  speedup vs sec  3.50x   vs par-1hilo  6.12x   eficiencia  38%
+  n=1000                 speedup vs sec  3.06x   vs par-1hilo  5.48x   eficiencia  34%
+  n=1500                 speedup vs sec  2.24x   vs par-1hilo  4.09x   eficiencia  26%
+  n=2000                 speedup vs sec  2.65x   vs par-1hilo  8.32x   eficiencia  52%
+
+RIEMANN, con el maximo de hilos:
+  funcion=1, n=100000000  speedup vs sec  9.57x   vs par-1hilo  8.57x   eficiencia  54%
+  funcion=1, n=500000000  speedup vs sec  7.71x   vs par-1hilo  6.73x   eficiencia  42%
+  funcion=1, n=1000000000 speedup vs sec  7.81x   vs par-1hilo  7.00x   eficiencia  44%
+  funcion=3, n=100000000  speedup vs sec  5.02x   vs par-1hilo  4.82x   eficiencia  30%
+  funcion=3, n=500000000  speedup vs sec  5.05x   vs par-1hilo  4.95x   eficiencia  31%
+  funcion=3, n=1000000000 speedup vs sec  5.06x   vs par-1hilo  4.91x   eficiencia  31%
+```
 
 ### Análisis
 
-> **Pendiente:** comentar en qué número de hilos cae la eficiencia y si coincide con los núcleos físicos del equipo.
+En la multiplicación de matrices, la escalabilidad de OpenMP es cercana o incluso ligeramente superior a la ideal hasta cuatro hilos para los tamaños de 1000 a 2000. A partir de ocho hilos la eficiencia disminuye de forma marcada. El caso de \(n=2000\), que ofrece la carga más representativa, obtiene un speedup \(S_{omp}\) de 5.71x con ocho hilos y de 8.32x con 16, equivalentes a eficiencias de 71 % y 52 %. La carga de \(1500 \times 1500\) muestra además una saturación clara: pasa de 0.489 s con ocho hilos a 0.578 s con 16, por lo que agregar hilos empeora el tiempo en esa configuración.
+
+El speedup formal de matrices frente al secuencial es menor que la escalabilidad medida desde el paralelo con un hilo. Para \(n=2000\), por ejemplo, \(S_{sec}\) es 2.65x mientras \(S_{omp}\) alcanza 8.32x. La causa es que la versión OpenMP con un hilo tarda 16.464 s frente a 5.248 s de la secuencial. Esto concuerda con el efecto descrito anteriormente: la región paralela inhibe una optimización SIMD que sí aprovecha el compilador en la versión secuencial, de modo que el paralelismo debe compensar primero esa desventaja.
+
+La suma de Riemann presenta un comportamiento más regular. Con \(f(x)=x^2\) y \(10^9\) rectángulos, el tiempo baja de 0.625 s en la versión secuencial a 0.080 s con 16 hilos, un speedup formal de 7.81x. La eficiencia \(E_{omp}\) es 87 % con cuatro hilos, 60 % con ocho y 44 % con 16. La versión OpenMP con un hilo es alrededor de 10 % más rápida que la secuencial porque `reduction` permite reasociar y vectorizar la suma; por eso \(S_{sec}\) supera a \(S_{omp}\) en esta función.
+
+Con \(f(x)=\sin x\), la versión secuencial de \(10^9\) rectángulos tarda 2.773 s y la paralela con 16 hilos 0.548 s, para un speedup formal de 5.06x. Aquí no aparece la ventaja de vectorización: los tiempos secuencial y paralelo con un hilo son casi iguales. La eficiencia cae a aproximadamente 51 % con cuatro hilos, 41 % con ocho y 31 % con 16, patrón que se repite en los tres tamaños y sugiere que la llamada a `sin()` y la administración de la ejecución limitan la escalabilidad antes que en el caso de \(x^2\).
+
+El punto exacto de saturación no puede asociarse de manera directa con los 14 núcleos físicos porque el barrido solo evaluó 8 y 16 hilos alrededor de ese límite. Además, el i9-13900H combina núcleos de rendimiento y de eficiencia, y únicamente los primeros ofrecen hilos lógicos adicionales; por ello, aumentar el número de hilos no añade capacidad homogénea. Los resultados sí muestran que con 16 hilos —dos más que los núcleos físicos— el trabajo todavía se acelera en la mayoría de los casos, pero con rendimientos marginales decrecientes y eficiencias entre 26 % y 54 % según el problema. Una medición adicional con 14 hilos permitiría ubicar con mayor precisión cuánto de la caída corresponde al uso de hilos lógicos.
 
 ---
 

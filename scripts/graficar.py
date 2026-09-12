@@ -56,7 +56,10 @@ def crudas(problema):
 def resumen_csv(problema):
     return RESULTADOS / f"metricas_{problema}.csv"
 
-NUCLEOS_FISICOS = 8  # Ryzen 7 5700U: 8 nucleos, 16 hilos logicos (SMT)
+# Cada integrante puede indicar la topologia de su maquina sin modificar el
+# script. Se conserva 8 como valor predeterminado por compatibilidad con las
+# mediciones originales de Ricardo.
+NUCLEOS_FISICOS = int(os.environ.get("NUCLEOS_FISICOS", "8"))
 
 # ------------------------------------------------------------------- estilo
 SUPERFICIE = "#fcfcfb"
