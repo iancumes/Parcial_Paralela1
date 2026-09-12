@@ -1,6 +1,18 @@
+# Presentación de resultados
+
+**Integrantes**
+
+- Ian Rodrigo Cumes Valdez
+- Diego José López Campos
+- Ricardo Arturo Godínez Sánchez
+
+---
+
 # Contexto y datos de los problemas seleccionados
 
 El equipo de RDI Solutions seleccionó los problemas de integración numérica mediante suma de Riemann y multiplicación de matrices densas. Ambos requieren una cantidad considerable de operaciones, por lo que permiten establecer una línea base secuencial y medir posteriormente el impacto de una implementación paralela.
+
+[Link al repositorio](https://github.com/iancumes/Parcial_Paralela1)
 
 ## Problema 2: Integración numérica mediante suma de Riemann
 
@@ -14,9 +26,9 @@ El objetivo es aproximar el área bajo una función compleja \(f(x)\) dentro del
 
 La propuesta secuencial recorre los \(10^9\) subintervalos uno por uno. En cada iteración calcula la posición \(x_i\), evalúa la función \(f(x_i)\) y agrega el área del rectángulo a un acumulador. Al finalizar, el acumulador representa la aproximación del área total bajo la curva.
 
-Los datos de prueba están definidos por la función a integrar, los límites \(a\) y \(b\), y el número de subdivisiones. Se utilizarán \(10^9\) rectángulos, tal como indica el problema, porque esta cantidad genera una carga computacional suficientemente grande para obtener mediciones de tiempo significativas. No es necesario almacenar los rectángulos ni los valores intermedios: cada posición y su contribución se calculan directamente durante la iteración. Por ello, el algoritmo mantiene un consumo de memoria constante, usando principalmente variables numéricas de punto flotante para \(\Delta x\), la posición actual y el acumulador.
+Los datos de prueba están definidos por la función a integrar, los límites \(a\) y \(b\), y el número de subdivisiones. Se utilizaron \(10^9\) rectángulos, tal como indica el problema, porque esta cantidad genera una carga computacional suficientemente grande para obtener mediciones de tiempo significativas. No es necesario almacenar los rectángulos ni los valores intermedios: cada posición y su contribución se calculan directamente durante la iteración. Por ello, el algoritmo mantiene un consumo de memoria constante, usando principalmente variables numéricas de punto flotante para \(\Delta x\), la posición actual y el acumulador.
 
-Para validar los resultados, se ejecutará la versión secuencial como referencia. Los resultados posteriores deberán conservar la misma aproximación dentro de una tolerancia numérica pequeña, ya que los cálculos con punto flotante pueden variar levemente según el orden de las operaciones.
+Para validar los resultados, se ejecutó la versión secuencial como referencia. Los resultados de la versión paralela conservan la misma aproximación dentro de una tolerancia numérica pequeña, ya que los cálculos con punto flotante pueden variar levemente según el orden de las operaciones.
 
 ## Problema 3: Multiplicación de matrices densas
 
@@ -34,15 +46,15 @@ C_{ij} = \sum_{k=0}^{n-1} A_{ik}B_{kj}.
 
 La propuesta secuencial utiliza tres ciclos anidados. Los dos ciclos externos recorren las posiciones \((i,j)\) de la matriz resultado, mientras que el ciclo interno recorre \(k\) para acumular los productos necesarios para calcular cada elemento \(C_{ij}\). El costo computacional aproximado es \(O(n^3)\), por lo que el tiempo de ejecución aumenta rápidamente al incrementar la dimensión de las matrices.
 
-Aunque el enunciado describe matrices de un millón por un millón de elementos, este tamaño no es viable en una computadora convencional. Una matriz de \(10^6 \times 10^6\) con elementos de tipo `double` requeriría aproximadamente 8 TB de memoria; almacenar simultáneamente \(A\), \(B\) y \(C\) requeriría alrededor de 24 TB, sin considerar memoria adicional. Por esta razón, se utilizarán matrices cuadradas de tamaño escalable y compatible con el hardware disponible, comenzando con tamaños como 500 x 500, 1000 x 1000 o mayores si la memoria y el tiempo de ejecución lo permiten. Esto permite mantener una carga de trabajo representativa y repetir las mediciones de manera confiable.
+Aunque el enunciado describe matrices de un millón por un millón de elementos, este tamaño no es viable en una computadora convencional. Una matriz de \(10^6 \times 10^6\) con elementos de tipo `double` requeriría aproximadamente 8 TB de memoria; almacenar simultáneamente \(A\), \(B\) y \(C\) requeriría alrededor de 24 TB, sin considerar memoria adicional. Por esta razón, se utilizaron matrices cuadradas de tamaño escalable y compatible con el hardware disponible, comenzando con tamaños como 500 x 500, 1000 x 1000 o mayores según lo permitieran la memoria y el tiempo de ejecución. Esto permite mantener una carga de trabajo representativa y repetir las mediciones de manera confiable.
 
-Las matrices se generarán con valores numéricos controlados o aleatorios y se almacenarán en arreglos contiguos en memoria. Esta representación permite acceder a los elementos mediante índices y favorece el aprovechamiento de la caché. La matriz \(C\) se inicializa antes de realizar los cálculos para almacenar el resultado de cada producto punto.
+Las matrices se generaron con valores numéricos controlados o aleatorios y se almacenaron en arreglos contiguos en memoria. Esta representación permite acceder a los elementos mediante índices y favorece el aprovechamiento de la caché. La matriz \(C\) se inicializa antes de realizar los cálculos para almacenar el resultado de cada producto punto.
 
-Para validar la implementación, la matriz resultante obtenida en futuras ejecuciones deberá compararse con la matriz producida por la versión secuencial. Cada elemento correspondiente de ambas matrices debe coincidir o diferir únicamente dentro de una tolerancia pequeña de punto flotante.
+Para validar la implementación, la matriz resultante de la versión paralela se comparó con la matriz producida por la versión secuencial. Cada elemento correspondiente de ambas matrices debe coincidir o diferir únicamente dentro de una tolerancia pequeña de punto flotante.
 
 ## Datos de prueba utilizados en las mediciones
 
-Las descripciones anteriores corresponden al planteamiento original. Al pasar a la medición fue necesario fijar valores concretos, que se detallan a continuación.
+Las secciones anteriores describen el planteamiento de cada problema. A continuación se detallan los valores concretos empleados en las mediciones.
 
 Para la multiplicación de matrices se emplearon matrices cuadradas de \(500 \times 500\), \(1000 \times 1000\), \(1500 \times 1500\) y \(2000 \times 2000\). El límite superior lo impone el tiempo de ejecución y no la memoria: con elementos de tipo `int`, las tres matrices ocupan 48 MB en el caso más grande, mientras que el costo \(O(n^3)\) hace que una sola corrida secuencial supere los cinco segundos. El tamaño \(500 \times 500\) se conserva únicamente como referencia de carga pequeña, ya que su tiempo de cómputo es tan breve que el costo de crear el equipo de hilos alcanza a ser apreciable frente al trabajo útil. Las matrices se almacenan en arreglos bidimensionales estáticos de memoria contigua y se llenan con valores enteros pseudoaleatorios en el rango \([0, 9]\), generados con una semilla fija para que la versión secuencial y la paralela operen exactamente sobre los mismos datos.
 
@@ -100,7 +112,7 @@ Un aspecto relevante es que la posición \(x_i\) se calcula como \(a + i\Delta x
 
 También en este caso se utilizó `schedule(static)`, por el mismo motivo que en el problema anterior: el trabajo por iteración es idéntico en todas ellas, pues cada una evalúa la misma función sobre un punto distinto. No existe desbalance que corregir y, por lo tanto, tampoco justificación para asumir el costo de una planificación dinámica.
 
-## Una consecuencia no evidente de las directivas
+## Efecto de las directivas sobre la vectorización
 
 Durante la medición se observó que la directiva no solo distribuye el trabajo, sino que también modifica las optimizaciones que el compilador puede aplicar, y lo hace en sentidos opuestos en cada problema.
 
@@ -241,19 +253,13 @@ Se observan eficiencias superiores al 100 %, o speedup superlineal, en las matri
 
 El caso de \(2000 \times 2000\) se aparta de la tendencia, con una eficiencia de 72 % frente al 107 % obtenido con \(1500 \times 1500\). La causa se verificó midiendo tamaños vecinos: el ciclo interno recorre `matriz_b[r][j]` por columnas, con un salto de \(n \times 4\) bytes entre accesos consecutivos, y cuando ese salto resulta múltiplo de potencias de dos grandes, las filas de una misma columna se asignan al mismo conjunto de caché y se expulsan entre sí. El efecto es pronunciado: con \(n = 2048\) el tiempo secuencial alcanza 19.3 s, frente a los 4.3 s que predice el crecimiento \(O(n^3)\). Se trata de una limitación del patrón de acceso a memoria y no del esquema de paralelización.
 
-Finalmente, la comparación entre ambos problemas resulta ilustrativa. La suma de Riemann alcanza speedups superiores frente al secuencial —hasta 11.89x con \(f(x) = x^2\)— pero ello se debe en parte a la vectorización adicional que habilita la cláusula `reduction`. Medida en términos de escalabilidad estricta, la multiplicación de matrices escala mejor (107 % de eficiencia con 8 hilos frente a 86 %), aunque ese margen incluye el beneficio de caché descrito anteriormente. Ambas cifras son legítimas siempre que se declare qué está midiendo cada una.
+Finalmente, la comparación entre ambos problemas resulta ilustrativa. La suma de Riemann alcanza speedups superiores frente al secuencial, hasta 11.89x con \(f(x) = x^2\), pero ello se debe en parte a la vectorización adicional que habilita la cláusula `reduction`. Medida en términos de escalabilidad estricta, la multiplicación de matrices escala mejor (107 % de eficiencia con 8 hilos frente a 86 %), aunque ese margen incluye el beneficio de caché descrito anteriormente. Ambas cifras son legítimas siempre que se declare qué está midiendo cada una.
 
 ---
 
 ## Integrante: Ian Rodrigo Cumes Valdez
 
 **Equipo de pruebas:** Intel Core i9-13900H de 13.ª generación, 14 núcleos físicos y 20 hilos lógicos, compilador MinGW-w64 GCC 16.1.0 sobre Windows de 64 bits (build 26200). Este procesador utiliza una arquitectura híbrida de núcleos de rendimiento y de eficiencia, por lo que los 14 núcleos físicos no tienen todos la misma capacidad de cómputo.
-
-Para generar estos resultados:
-
-```sh
-NUCLEOS_FISICOS=14 ./scripts/benchmark.sh --etiqueta ian
-```
 
 ### Multiplicación de matrices
 
@@ -280,13 +286,13 @@ NUCLEOS_FISICOS=14 ./scripts/benchmark.sh --etiqueta ian
 | 2000 | 8 | 5.248 | 2.882 | 1.82x | 5.71x | 71% |
 | 2000 | 16 | 5.248 | 1.980 | 2.65x | 8.32x | 52% |
 
-![Speedup de matrices — Ian](../img_ian/matrices_speedup_vs_hilos.png)
+![Speedup de matrices, Ian](../img_ian/matrices_speedup_vs_hilos.png)
 
-![Eficiencia de matrices — Ian](../img_ian/matrices_eficiencia_vs_hilos.png)
+![Eficiencia de matrices, Ian](../img_ian/matrices_eficiencia_vs_hilos.png)
 
-![Tiempo de matrices según hilos — Ian](../img_ian/matrices_tiempo_vs_hilos.png)
+![Tiempo de matrices según hilos, Ian](../img_ian/matrices_tiempo_vs_hilos.png)
 
-![Tiempo de matrices según tamaño — Ian](../img_ian/matrices_tiempo_vs_tamano.png)
+![Tiempo de matrices según tamaño, Ian](../img_ian/matrices_tiempo_vs_tamano.png)
 
 ### Suma de Riemann
 
@@ -323,13 +329,13 @@ NUCLEOS_FISICOS=14 ./scripts/benchmark.sh --etiqueta ian
 | \(\sin x\) | 1,000,000,000 | 8 | 2.773 | 0.813 | 3.41x | 3.31x | 41% |
 | \(\sin x\) | 1,000,000,000 | 16 | 2.773 | 0.548 | 5.06x | 4.91x | 31% |
 
-![Speedup de Riemann — Ian](../img_ian/riemann_speedup_vs_hilos.png)
+![Speedup de Riemann, Ian](../img_ian/riemann_speedup_vs_hilos.png)
 
-![Eficiencia de Riemann — Ian](../img_ian/riemann_eficiencia_vs_hilos.png)
+![Eficiencia de Riemann, Ian](../img_ian/riemann_eficiencia_vs_hilos.png)
 
-![Tiempo de Riemann según hilos — Ian](../img_ian/riemann_tiempo_vs_hilos.png)
+![Tiempo de Riemann según hilos, Ian](../img_ian/riemann_tiempo_vs_hilos.png)
 
-![Tiempo de Riemann según rectángulos — Ian](../img_ian/riemann_tiempo_vs_tamano.png)
+![Tiempo de Riemann según rectángulos, Ian](../img_ian/riemann_tiempo_vs_tamano.png)
 
 ### Evidencia de ejecución
 
@@ -363,7 +369,7 @@ La suma de Riemann presenta un comportamiento más regular. Con \(f(x)=x^2\) y \
 
 Con \(f(x)=\sin x\), la versión secuencial de \(10^9\) rectángulos tarda 2.773 s y la paralela con 16 hilos 0.548 s, para un speedup formal de 5.06x. Aquí no aparece la ventaja de vectorización: los tiempos secuencial y paralelo con un hilo son casi iguales. La eficiencia cae a aproximadamente 51 % con cuatro hilos, 41 % con ocho y 31 % con 16, patrón que se repite en los tres tamaños y sugiere que la llamada a `sin()` y la administración de la ejecución limitan la escalabilidad antes que en el caso de \(x^2\).
 
-El punto exacto de saturación no puede asociarse de manera directa con los 14 núcleos físicos porque el barrido solo evaluó 8 y 16 hilos alrededor de ese límite. Además, el i9-13900H combina núcleos de rendimiento y de eficiencia, y únicamente los primeros ofrecen hilos lógicos adicionales; por ello, aumentar el número de hilos no añade capacidad homogénea. Los resultados sí muestran que con 16 hilos —dos más que los núcleos físicos— el trabajo todavía se acelera en la mayoría de los casos, pero con rendimientos marginales decrecientes y eficiencias entre 26 % y 54 % según el problema. Una medición adicional con 14 hilos permitiría ubicar con mayor precisión cuánto de la caída corresponde al uso de hilos lógicos.
+El punto exacto de saturación no puede asociarse de manera directa con los 14 núcleos físicos porque el barrido solo evaluó 8 y 16 hilos alrededor de ese límite. Además, el i9-13900H combina núcleos de rendimiento y de eficiencia, y únicamente los primeros ofrecen hilos lógicos adicionales; por ello, aumentar el número de hilos no añade capacidad homogénea. Los resultados sí muestran que con 16 hilos, dos más que los núcleos físicos, el trabajo todavía se acelera en la mayoría de los casos, pero con rendimientos marginales decrecientes y eficiencias entre 26 % y 54 % según el problema. Una medición adicional con 14 hilos permitiría ubicar con mayor precisión cuánto de la caída corresponde al uso de hilos lógicos.
 
 ---
 
@@ -396,13 +402,13 @@ El punto exacto de saturación no puede asociarse de manera directa con los 14 n
 | 2000 | 8 | 3.141 | 1.225 | 2.56x | 8.00x | 100% |
 | 2000 | 16 | 3.141 | 0.722 | 4.35x | 13.57x | 85% |
 
-![Speedup de matrices — Diego](../img_diego/matrices_speedup_vs_hilos.png)
+![Speedup de matrices, Diego](../img_diego/matrices_speedup_vs_hilos.png)
 
-![Eficiencia de matrices — Diego](../img_diego/matrices_eficiencia_vs_hilos.png)
+![Eficiencia de matrices, Diego](../img_diego/matrices_eficiencia_vs_hilos.png)
 
-![Tiempo de matrices según hilos — Diego](../img_diego/matrices_tiempo_vs_hilos.png)
+![Tiempo de matrices según hilos, Diego](../img_diego/matrices_tiempo_vs_hilos.png)
 
-![Tiempo de matrices según tamaño — Diego](../img_diego/matrices_tiempo_vs_tamano.png)
+![Tiempo de matrices según tamaño, Diego](../img_diego/matrices_tiempo_vs_tamano.png)
 
 ### Suma de Riemann
 
@@ -439,13 +445,13 @@ El punto exacto de saturación no puede asociarse de manera directa con los 14 n
 | \(\sin x\) | 1,000,000,000 | 8 | 2.478 | 0.501 | 4.95x | 3.84x | 48% |
 | \(\sin x\) | 1,000,000,000 | 16 | 2.478 | 0.314 | 7.89x | 6.12x | 38% |
 
-![Speedup de Riemann — Diego](../img_diego/riemann_speedup_vs_hilos.png)
+![Speedup de Riemann, Diego](../img_diego/riemann_speedup_vs_hilos.png)
 
-![Eficiencia de Riemann — Diego](../img_diego/riemann_eficiencia_vs_hilos.png)
+![Eficiencia de Riemann, Diego](../img_diego/riemann_eficiencia_vs_hilos.png)
 
-![Tiempo de Riemann según hilos — Diego](../img_diego/riemann_tiempo_vs_hilos.png)
+![Tiempo de Riemann según hilos, Diego](../img_diego/riemann_tiempo_vs_hilos.png)
 
-![Tiempo de Riemann según rectángulos — Diego](../img_diego/riemann_tiempo_vs_tamano.png)
+![Tiempo de Riemann según rectángulos, Diego](../img_diego/riemann_tiempo_vs_tamano.png)
 
 ### Evidencia de ejecución
 
@@ -463,4 +469,60 @@ Para Riemann con \(x^2\), la eficiencia respecto a OpenMP se mantiene cercana a 
 
 ## Comparación entre los tres equipos
 
-> **Pendiente:** completar cuando estén disponibles las tres mediciones. La hipótesis a contrastar es que el punto donde se desploma la eficiencia coincida, en cada equipo, con su número de núcleos físicos y no con el de hilos lógicos.
+Las tres mediciones se realizaron con el mismo código, las mismas banderas de compilación y la misma rejilla de configuraciones, sobre equipos deliberadamente distintos. Esa diversidad permite separar lo que depende del algoritmo de lo que depende del hardware.
+
+| Integrante | Procesador | Núcleos físicos | Hilos lógicos | Compilador y sistema |
+|---|---|---|---|---|
+| Ricardo | AMD Ryzen 7 5700U | 8 | 16 (SMT) | GCC 16.2.1 sobre Linux |
+| Ian | Intel Core i9-13900H | 14 (híbrido) | 20 | MinGW GCC 16.1.0 sobre Windows |
+| Diego | Intel Core Ultra 7 255HX | 20 | 20 (sin SMT) | MinGW GCC 15.2.0 sobre Windows |
+
+La siguiente tabla resume la eficiencia \(E_{omp}\) en las configuraciones de mayor carga de cada problema.
+
+| Configuración | Equipo | 2 hilos | 4 hilos | 8 hilos | 16 hilos | \(S_{omp}\) máx. |
+|---|---|---|---|---|---|---|
+| Matrices \(2000 \times 2000\) | Ricardo | 81 % | 80 % | 72 % | 43 % | 6.96x |
+| | Ian | 102 % | 102 % | 71 % | 52 % | 8.32x |
+| | Diego | 100 % | 100 % | 100 % | 85 % | 13.57x |
+| Riemann \(x^2\), \(10^9\) | Ricardo | 98 % | 96 % | 86 % | 54 % | 8.70x |
+| | Ian | 96 % | 87 % | 60 % | 44 % | 7.00x |
+| | Diego | 96 % | 95 % | 77 % | 53 % | 8.43x |
+| Riemann \(\sin x\), \(10^9\) | Ricardo | 93 % | 88 % | 74 % | 42 % | 6.76x |
+| | Ian | 75 % | 51 % | 41 % | 31 % | 4.91x |
+| | Diego | 81 % | 57 % | 48 % | 38 % | 6.12x |
+
+### Relación entre el punto de saturación y los núcleos disponibles
+
+La hipótesis planteada era que la eficiencia se desplomaría al superar el número de núcleos físicos de cada equipo. Los tres resultados la sostienen, y lo hacen de manera complementaria porque cada máquina se sitúa en una posición distinta respecto a su propio límite.
+
+En el equipo de Ricardo, con 8 núcleos físicos, la rejilla de medición cruza el límite justo entre los dos últimos puntos, y allí aparece la caída más nítida de las tres: en matrices de \(1500 \times 1500\) la eficiencia pasa de 107 % con 8 hilos a 73 % con 16, y en la suma de Riemann con \(x^2\), de 86 % a 54 %. El comportamiento se repite en todos los tamaños y con ambas funciones.
+
+El equipo de Diego constituye el caso de control más informativo, ya que dispone de 20 núcleos físicos y no utiliza SMT: sus 20 hilos lógicos corresponden a 20 núcleos reales. Como el barrido llegó únicamente a 16 hilos, **esta máquina nunca alcanza su límite**, y en consecuencia no presenta el desplome. En matrices de \(2000 \times 2000\) conserva 100 % de eficiencia hasta 8 hilos y 85 % con 16, el mejor resultado del grupo, con un speedup \(S_{omp}\) de 13.57x. Que la única máquina que no cruza su límite sea también la única que no muestra el desplome es la evidencia más directa a favor de la hipótesis.
+
+El equipo de Ian introduce un matiz importante. Su eficiencia cae **antes** de los 14 núcleos físicos: en matrices de \(1500 \times 1500\) desciende de 106 % con 4 hilos a 60 % con 8. La explicación reside en la arquitectura híbrida del i9-13900H, que combina núcleos de rendimiento con núcleos de eficiencia de menor capacidad. Sus 14 núcleos físicos no son equivalentes entre sí, de modo que el número relevante no es el total, sino la cantidad de núcleos de rendimiento disponibles. La formulación precisa de la hipótesis no es, por tanto, que el límite lo marquen los núcleos físicos, sino los **núcleos de capacidad equivalente**; en las dos máquinas homogéneas ambas cifras coinciden y en la híbrida se separan.
+
+### Comportamiento de `schedule(static)` en arquitecturas heterogéneas
+
+El caso de Ian expone una consecuencia de la planificación estática que no se apreciaba en los otros dos equipos. En matrices de \(1500 \times 1500\), su tiempo **aumenta** de 0.489 s con 8 hilos a 0.578 s con 16: agregar hilos degrada el desempeño en términos absolutos.
+
+La sección de estrategia justificó `schedule(static)` argumentando que el trabajo por iteración es uniforme, lo cual es cierto respecto al algoritmo. Sin embargo, esa justificación presupone implícitamente que los núcleos que ejecutan esos bloques también lo son. Cuando no se cumple, el reparto estático asigna bloques de igual tamaño a núcleos de capacidad distinta, y los hilos que terminan antes permanecen detenidos en la barrera final esperando al bloque asignado a un núcleo de eficiencia. Este es el único escenario entre los tres donde `schedule(dynamic)` o `schedule(guided)` podría mejorar el resultado, precisamente porque reasignarían trabajo conforme los hilos quedan libres. Conviene señalarlo como un matiz a la decisión tomada, y no como un error: en hardware homogéneo, que es el caso de los otros dos equipos, la planificación estática sigue siendo la elección adecuada.
+
+### El costo de la vectorización inhibida varía según el entorno de compilación
+
+La pérdida de vectorización en la multiplicación de matrices se observó en los tres equipos, pero con magnitudes distintas. La razón \(T_{par}(1)/T_{sec}\) en matrices de \(2000 \times 2000\) es 1.78 en el equipo de Ricardo, 3.14 en el de Ian y 3.12 en el de Diego. En el caso de Diego la penalización se mantiene alta en todos los tamaños, entre 2.81 y 3.12, mientras que en el de Ian solo alcanza ese nivel en la carga mayor y se sitúa cerca de 1.8 en las demás.
+
+Esta dispersión confirma la pertinencia de reportar las dos medidas de speedup. Si se hubiera empleado únicamente \(S_{sec}\), la comparación entre los tres equipos habría mezclado el efecto del paralelismo con el de las optimizaciones que cada combinación de compilador y sistema aplica a la versión secuencial, y las diferencias observadas no serían atribuibles al esquema de paralelización.
+
+En la suma de Riemann la situación resulta menos regular de lo previsto. En el equipo de Ricardo se confirma con claridad lo expuesto en la sección de estrategia: la razón \(T_{par}(1)/T_{sec}\) es 0.73 con \(x^2\), donde la cláusula `reduction` habilita la vectorización, y 0.98 con \(\sin x\), donde la llamada a la biblioteca matemática impide aprovecharla. En el equipo de Ian el patrón se conserva de forma atenuada, con 0.90 y 0.97 respectivamente. En el de Diego, en cambio, la relación se invierte: 0.96 con \(x^2\) y 0.78 con \(\sin x\), es decir, la ganancia aparece en la función que teóricamente no debería vectorizarse. Este comportamiento no queda explicado por el análisis realizado y podría deberse a la versión del compilador, que es anterior a la de los otros dos equipos, o a la implementación de la biblioteca matemática empleada. Se documenta como una observación pendiente de verificación en lugar de forzar su encaje en la explicación general.
+
+### Comportamientos que se reproducen en los tres equipos
+
+Dos resultados aparecen en las tres máquinas, lo que permite atribuirlos al algoritmo y no al hardware particular de ninguna.
+
+El primero es la eficiencia superior al 100 % en matrices de tamaño intermedio: 107 % en el equipo de Ricardo con 8 hilos, 106 % en el de Ian con 2 y 4 hilos, y 105 % en el de Diego con 2 hilos. Que el speedup superlineal se manifieste en tres arquitecturas distintas respalda la explicación basada en el efecto de caché, según la cual el reparto de filas permite que cada hilo opere sobre un bloque que sí cabe en su caché privada.
+
+El segundo es la caída de eficiencia en matrices de \(500 \times 500\) con 16 hilos, que se sitúa en 37 %, 38 % y 42 % respectivamente. La coincidencia de los tres valores, pese a las diferencias de hardware, confirma la existencia de un tamaño mínimo de problema por debajo del cual el costo de crear y sincronizar el equipo de hilos no llega a amortizarse.
+
+### Limitación metodológica
+
+Los tres barridos emplearon la misma rejilla de hilos, 1, 2, 4, 8 y 16, lo cual facilita la comparación directa pero deja sin medir la región donde los equipos de Ian y Diego alcanzan su propio límite. En el caso de Diego el barrido termina cuatro hilos antes de agotar sus núcleos, de modo que su mejor resultado, 85 % de eficiencia con 16 hilos, no representa el punto de saturación sino el último punto medido. En el de Ian faltan mediciones intermedias que permitirían distinguir el agotamiento de los núcleos de rendimiento del inicio del uso de núcleos de eficiencia. Una rejilla adaptada al número de núcleos de cada máquina, que incluyera por ejemplo 6, 14 y 20 hilos, ubicaría el punto de quiebre con mayor precisión y permitiría verificar de manera más estricta la hipótesis planteada.
